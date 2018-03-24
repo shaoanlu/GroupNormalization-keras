@@ -51,8 +51,8 @@ class GroupNormalization(Layer):
             batch_size = -1
 
         x = K.reshape(inputs, (batch_size, h, w, self.group, c // self.group))
-        mean = K.mean(x, axis=[2, 3, 4], keepdims=True)
-        std = K.sqrt(K.var(x, axis=[2, 3, 4], keepdims=True) + self.epsilon)
+        mean = K.mean(x, axis=[1, 2, 4], keepdims=True)
+        std = K.sqrt(K.var(x, axis=[1, 2, 4], keepdims=True) + self.epsilon)
         x = (x - mean) / std
 
         x = K.reshape(x, (batch_size, h, w, c))
