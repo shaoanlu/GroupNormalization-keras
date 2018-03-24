@@ -7,7 +7,7 @@ Yuxin Wu and Kaiming He
 ## [WIP Alert]
 This repository is still work in progress.
 
-The functionanity of Group Normalization have not been fully checked. The implementation could be wrong.
+The functionality of Group Normalization has not been fully checked. The implementation could be wrong.
 
 ## Usage
 ```python
