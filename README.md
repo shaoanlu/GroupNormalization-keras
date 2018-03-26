@@ -57,7 +57,9 @@ model.add(Activation('relu'))
 ### More comparisons
 
 #### a. GroupNorm w/ optimizer [AMSGrad](https://openreview.net/forum?id=ryQu7f-RZ), batch size = 1
+  - Training time: 3 hrs on Google Colab
 #### b. GroupNorm w/ optimizer [AMSGrad](https://openreview.net/forum?id=ryQu7f-RZ), batch size = 128, epochs = 39
+  - Training time: 17 mins on Google Colab
 
 1. Training loss
 
