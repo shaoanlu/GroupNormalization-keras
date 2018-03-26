@@ -27,6 +27,7 @@ model.add(Activation('relu'))
 ## Experiments with group normalization
 
 - [Experiment notebook](https://github.com/shaoanlu/GroupNormalization-keras/blob/master/group_norm_experiments.ipynb)
+- [Blog post](https://shaoanlu.wordpress.com/2018/03/26/experiment-with-group-normalization/)
 
 ### Comparison between BatchNorm, groupNorm and InstanceNorm
 
