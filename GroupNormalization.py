@@ -1,6 +1,7 @@
 from keras.engine import Layer, InputSpec
 from keras import initializers, regularizers
 from keras import backend as K
+from keras.utils import conv_utils
 
 def to_list(x):
     if type(x) not in [list, tuple]:
@@ -14,6 +15,7 @@ class GroupNormalization(Layer):
                  gamma_regularizer=None, beta_regularizer=None,
                  epsilon=1e-6, 
                  group=32,
+                 data_format=None,
                  **kwargs): 
         super(GroupNormalization, self).__init__(**kwargs)
 
@@ -24,15 +26,21 @@ class GroupNormalization(Layer):
         self.beta_regularizer = regularizers.get(beta_regularizer)
         self.epsilon = epsilon
         self.group = group
+        self.data_format = conv_utils.normalize_data_format(data_format)
 
         self.supports_masking = True
 
     def build(self, input_shape):
         self.input_spec = [InputSpec(shape=input_shape)]
-        shape = [1 for _ in input_shape]
-        shape[-1] = input_shape[-1] # ===== possible bug here: channel last =====
-        for i in self.axis:
-            shape[i] = input_shape[i]
+        shape = [1 for _ in input_shape]       
+        if self.data_format == 'channels_last':
+            channel_axis = -1
+            shape[channel_axis] = input_shape[channel_axis]
+        elif self.data_format == 'channels_first':
+            channel_axis = 1
+            shape[channel_axis] = input_shape[channel_axis]
+        #for i in self.axis:
+        #    shape[i] = input_shape[i]
         self.gamma = self.add_weight(shape=shape,
                                      initializer=self.gamma_init,
                                      regularizer=self.gamma_regularizer,
@@ -45,22 +53,50 @@ class GroupNormalization(Layer):
 
     def call(self, inputs, mask=None):
         input_shape = K.int_shape(inputs)
-        if len(input_shape) != 4:
+        if len(input_shape) != 4 and len(input_shape) != 2:
             raise ValueError('Inputs should have rank ' +
-                             str(4) +
+                             str(4) + " or " + str(2) +
                              '; Received input shape:', str(input_shape))
 
-        batch_size, h, w, c = input_shape
-        if batch_size is None:
-            batch_size = -1
+        if len(input_shape) == 4:
+            if self.data_format == 'channels_last':
+                batch_size, h, w, c = input_shape
+                if batch_size is None:
+                    batch_size = -1
 
-        x = K.reshape(inputs, (batch_size, h, w, self.group, c // self.group))
-        mean = K.mean(x, axis=[1, 2, 4], keepdims=True)
-        std = K.sqrt(K.var(x, axis=[1, 2, 4], keepdims=True) + self.epsilon)
-        x = (x - mean) / std
+                x = K.reshape(inputs, (batch_size, h, w, self.group, c // self.group))
+                mean = K.mean(x, axis=[1, 2, 4], keepdims=True)
+                std = K.sqrt(K.var(x, axis=[1, 2, 4], keepdims=True) + self.epsilon)
+                x = (x - mean) / std
 
-        x = K.reshape(x, (batch_size, h, w, c))
-        return self.gamma * x + self.beta
+                x = K.reshape(x, (batch_size, h, w, c))
+                return self.gamma * x + self.beta
+            elif self.data_format == 'channels_first':
+                batch_size, c, h, w = input_shape
+                if batch_size is None:
+                    batch_size = -1
+
+                x = K.reshape(inputs, (batch_size, self.group, c // self.group, h, w))
+                mean = K.mean(x, axis=[2, 3, 4], keepdims=True)
+                std = K.sqrt(K.var(x, axis=[2, 3, 4], keepdims=True) + self.epsilon)
+                x = (x - mean) / std
+
+                x = K.reshape(x, (batch_size, c, h, w))
+                return self.gamma * x + self.beta
+                
+        elif len(input_shape) == 2:
+            reduction_axes = list(range(0, len(input_shape)))
+            del reduction_axes[0]
+            batch_size, _ = input_shape
+            if batch_size is None:
+                batch_size = -1
+                
+            mean = K.mean(inputs, keepdims=True)
+            std = K.sqrt(K.var(inputs, keepdims=True) + self.epsilon)
+            x = (inputs  - mean) / std
+            
+            return self.gamma * x + self.beta
+            
 
     def get_config(self):
         config = {'epsilon': self.epsilon,
