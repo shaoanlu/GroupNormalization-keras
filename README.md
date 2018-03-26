@@ -29,7 +29,7 @@ model.add(Activation('relu'))
 - [Experiment notebook](https://github.com/shaoanlu/GroupNormalization-keras/blob/master/group_norm_experiments.ipynb)
 - [Blog post](https://shaoanlu.wordpress.com/2018/03/26/experiment-with-group-normalization/)
 
-### Comparison between BatchNorm, groupNorm and InstanceNorm
+### Experiment 1: Comparison between BatchNorm, groupNorm and InstanceNorm
 
 #### Setup
 - Dataset: [Fashion MNIST](https://github.com/zalandoresearch/fashion-mnist)
@@ -55,7 +55,7 @@ model.add(Activation('relu'))
 
 ![](https://github.com/shaoanlu/GroupNormalization-keras/raw/master/figures/val_acc0.png)
 
-### More comparisons
+### Experiment 2: More comparisons
 
 #### a. GroupNorm w/ optimizer [AMSGrad](https://openreview.net/forum?id=ryQu7f-RZ), batch size = 1
   - Training time: 3 hrs on Google Colab
