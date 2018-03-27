@@ -63,6 +63,12 @@ class GroupNormalization(Layer):
                 batch_size, h, w, c = input_shape
                 if batch_size is None:
                     batch_size = -1
+                
+                if c < self.group:
+                    raise ValueError('Input channels should be larger than group size' +
+                                     '; Received input channels: ' + str(c) +
+                                     '; Group size: ' + str(self.group)
+                                    )
 
                 x = K.reshape(inputs, (batch_size, h, w, self.group, c // self.group))
                 mean = K.mean(x, axis=[1, 2, 4], keepdims=True)
@@ -75,6 +81,12 @@ class GroupNormalization(Layer):
                 batch_size, c, h, w = input_shape
                 if batch_size is None:
                     batch_size = -1
+                
+                if c < self.group:
+                    raise ValueError('Input channels should be larger than group size' +
+                                     '; Received input channels: ' + str(c) +
+                                     '; Group size: ' + str(self.group)
+                                    )
 
                 x = K.reshape(inputs, (batch_size, self.group, c // self.group, h, w))
                 mean = K.mean(x, axis=[2, 3, 4], keepdims=True)
