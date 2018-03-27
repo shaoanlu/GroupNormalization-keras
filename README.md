@@ -26,10 +26,10 @@ model.add(Activation('relu'))
 
 ## Experiments with group normalization
 
-- [Experiment notebook](https://github.com/shaoanlu/GroupNormalization-keras/blob/master/group_norm_experiments.ipynb)
-- [Blog post](https://shaoanlu.wordpress.com/2018/03/26/experiment-with-group-normalization/)
+- ### [Experiment notebook](https://github.com/shaoanlu/GroupNormalization-keras/blob/master/group_norm_experiments.ipynb)
+- ### [Blog post](https://shaoanlu.wordpress.com/2018/03/26/experiment-with-group-normalization/)
 
-### Experiment 1: Comparison between BatchNorm, groupNorm and InstanceNorm
+### Experiment 1: Comparison between BatchNorm, GroupNorm and InstanceNorm
 
 #### Setup
 - Dataset: [Fashion MNIST](https://github.com/zalandoresearch/fashion-mnist)
