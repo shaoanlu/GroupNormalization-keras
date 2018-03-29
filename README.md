@@ -79,4 +79,4 @@ model.add(Activation('relu'))
 ![](https://github.com/shaoanlu/GroupNormalization-keras/raw/master/figures/val_acc.png)
 
 ## Acknowledgments
-Code borrows from [DingKe](https://github.com/DingKe/nn_playground/blob/master/layernorm/layer_norm_layers.py).
+Code borrows from [DingKe](https://github.com/DingKe/nn_playground/blob/master/layernorm/layer_norm_layers.py). Instance normalization implementation is from [keras-contrib](https://github.com/keras-team/keras-contrib/blob/master/keras_contrib/layers/normalization.py).
